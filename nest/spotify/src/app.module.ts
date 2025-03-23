@@ -7,6 +7,10 @@ import { LoggerMiddleware } from './common/middleware/logger/logger.middleware';
 import { DevServiceConfig } from './common/providers/DevServiceConfig';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import { UsersController } from './users/users.controller';
+import { ArtistsController } from './artists/artists.controller';
+import { ArtistsModule } from './artists/artists.module';
+import { UsersModule } from './users/users.module';
 
 
 const devConfig={port:3000}
@@ -24,12 +28,14 @@ const proConfig={port:3000}
       entities: [__dirname + '/**/*.entity{.ts,.js}'], // our entities
       synchronize: true, // synchronize database
       logging:true    
-    })
+    }),
+    ArtistsModule,
+    UsersModule
 
 
 
   ],
-  controllers: [AppController],
+  controllers: [AppController, UsersController, ArtistsController],
   providers: [
     AppService
     ,

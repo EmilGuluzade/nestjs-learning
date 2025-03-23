@@ -11,7 +11,8 @@ readonly title: string;
 
 @IsNotEmpty()
 @IsArray()
-readonly artists: string[];
+@IsNumber({}, { each: true })
+readonly artists;
 
 @IsNotEmpty()
 @IsMilitaryTime()
