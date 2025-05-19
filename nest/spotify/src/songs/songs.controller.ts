@@ -23,7 +23,10 @@ import { Pagination } from 'nestjs-typeorm-paginate';
 
 @Controller('songs')
 export class SongsController {
-  constructor(private songsService: SongsService, @Inject("CONNECTION") private connection:Connection) {}
+  constructor(
+    private songsService: SongsService,
+    @Inject('CONNECTION') private connection: Connection,
+  ) {}
 
   // @Get()
   // getAll() :Promise<Song[]> {
@@ -42,18 +45,16 @@ export class SongsController {
   // }
   @Get()
   getAll(
-@Query('page',new DefaultValuePipe(1), ParseIntPipe) page :number = 1,
-@Query('limit',new DefaultValuePipe(10), ParseIntPipe) limit :number = 10,
-  ) :Promise<Pagination<Song>> {
-limit = limit > 100 ? 100 : limit;
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ): Promise<Pagination<Song>> {
+    limit = limit > 100 ? 100 : limit;
 
     return this.songsService.paginate({
       page,
-      limit
+      limit,
     });
   }
-
-
 
   @Get(':id')
   getOne(
@@ -62,7 +63,7 @@ limit = limit > 100 ? 100 : limit;
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
     id: number,
-  ):Promise<Song|null> {
+  ): Promise<Song | null> {
     return this.songsService.getOne(id);
   }
 
@@ -72,12 +73,15 @@ limit = limit > 100 ? 100 : limit;
   }
 
   @Put(':id')
-  update(@Param("id",ParseIntPipe) id:number, @Body() updateSong:UpdateSongDto): Promise<UpdateResult> {
-    return this.songsService.update(id,updateSong);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSong: UpdateSongDto,
+  ): Promise<UpdateResult> {
+    return this.songsService.update(id, updateSong);
   }
 
   @Delete(':id')
-  delete(@Param("id",ParseIntPipe) id:number): Promise<DeleteResult> {
+  delete(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
     return this.songsService.delete(id);
   }
 }

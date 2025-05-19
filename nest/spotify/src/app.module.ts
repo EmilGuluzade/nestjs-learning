@@ -11,64 +11,51 @@ import { UsersController } from './users/users.controller';
 import { ArtistsController } from './artists/artists.controller';
 import { ArtistsModule } from './artists/artists.module';
 import { UsersModule } from './users/users.module';
+import { PlaylistModule } from './playlist/playlist.module';
+import { AuthModule } from './auth/auth.module';
 
-
-const devConfig={port:3000}
-const proConfig={port:3000}
+const devConfig = { port: 3000 };
+const proConfig = { port: 3000 };
 
 @Module({
-  imports: [SongsModule,
+  imports: [
+    SongsModule,
     TypeOrmModule.forRoot({
-      type: 'postgres',  // type of our database
-      host: 'localhost', // database host   
-      port: 5432,        // database host port
-      username:"postgres", // username
-      password:"tritan31", // password    
-      database:"spotify", // name of our database
-      entities: [__dirname + '/**/*.entity{.ts,.js}'], // our entities
-      synchronize: true, // synchronize database
-      logging:true    
-    }),
+      type: 'postgres', // type of our database
+      host: 'localhost', // database host
+      port: 5432, // database host port
+      username: 'postgres', // username
+      password: 'tritan31', // password
+      database: 'spotify-clone', // name of our database
+      entities: [__dirname + '/**/*.entity{.ts,.js}'], 
+  }),
     ArtistsModule,
-    UsersModule
-
-
-
+    UsersModule,
+    PlaylistModule,
+    AuthModule,
   ],
   controllers: [AppController, UsersController, ArtistsController],
   providers: [
-    AppService
-    ,
+    AppService,
 
-{
-  provide: DevServiceConfig,
-  useClass: DevServiceConfig, 
-},
- {  provide: 'CONFIG',
-  useFactory:() =>{
- return (process.env.NODE_ENV === 'development') ? devConfig : proConfig;
-  }
-} ]
-
-
-
+    {
+      provide: DevServiceConfig,
+      useClass: DevServiceConfig,
+    },
+    {
+      provide: 'CONFIG',
+      useFactory: () => {
+        return process.env.NODE_ENV === 'development' ? devConfig : proConfig;
+      },
+    },
+  ],
 })
-
-
-
-
 export class AppModule implements NestModule {
-
-  constructor(private datasouce:DataSource) {
-
-console.log("DB" ,datasouce.driver.database)
-
+  constructor(private datasouce: DataSource) {
+    console.log('DB', datasouce.driver.database);
   }
-
 
   configure(consumer: MiddlewareConsumer): void {
     consumer.apply(LoggerMiddleware).forRoutes(SongsController);
   }
-
-
 }
